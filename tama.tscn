@@ -1,0 +1,18 @@
+[gd_scene load_steps=4 format=3 uid="uid://ckjlp5mpab3ds"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_c2ir2"]
+albedo_color = Color(0.99961, 0.637841, 1.15514e-06, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_c2ir2"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_7ugyr"]
+
+[node name="RigidBody3D" type="RigidBody3D"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+material_override = SubResource("StandardMaterial3D_c2ir2")
+mesh = SubResource("SphereMesh_c2ir2")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_7ugyr")
+debug_color = Color(0.696809, 0.482968, 0.294216, 0.42)
