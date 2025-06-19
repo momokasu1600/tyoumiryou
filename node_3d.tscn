@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://cbu08yhurrlih"]
+[gd_scene load_steps=8 format=3 uid="uid://cbu08yhurrlih"]
 
 [ext_resource type="Script" uid="uid://cim504qw4ukx0" path="res://hassya.gd" id="1_a202f"]
 [ext_resource type="PackedScene" uid="uid://ckjlp5mpab3ds" path="res://tama.tscn" id="2_noarx"]
@@ -11,26 +11,19 @@
 [sub_resource type="BoxShape3D" id="BoxShape3D_a202f"]
 size = Vector3(10, 1, 10)
 
-[sub_resource type="BoxMesh" id="BoxMesh_noarx"]
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_a0tk4"]
-
-[sub_resource type="BoxMesh" id="BoxMesh_jka67"]
-
 [node name="Node3D" type="Node3D"]
-script = ExtResource("1_a202f")
-bullet_scene = ExtResource("2_noarx")
-red_bullet_scene = ExtResource("3_jka67")
-blue_bullet_scene = ExtResource("4_i5arm")
-black_bullet_scene = ExtResource("5_wc5p8")
 
-[node name="Camera3D" type="Camera3D" parent="."]
+[node name="Camera3D" type="Camera3D" parent="." node_paths=PackedStringArray("normal_label", "red_label", "blue_label", "black_label")]
 transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, -0.19127, 15.0701, 19.6888)
 script = ExtResource("1_a202f")
 bullet_scene = ExtResource("3_jka67")
 red_bullet_scene = ExtResource("4_i5arm")
 blue_bullet_scene = ExtResource("5_wc5p8")
 black_bullet_scene = ExtResource("2_noarx")
+normal_label = NodePath("../CanvasLayer/VBoxContainer/aka")
+red_label = NodePath("../CanvasLayer/VBoxContainer/ki")
+blue_label = NodePath("../CanvasLayer/VBoxContainer/ao")
+black_label = NodePath("../CanvasLayer/VBoxContainer/kuro")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 0, 4)
@@ -43,25 +36,24 @@ transform = Transform3D(10, 0, 0, 0, 1, 0, 0, 0, 10, -0.0133373, -0.462968, 0.03
 mesh = SubResource("BoxMesh_4xowi")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
-transform = Transform3D(10, 0, 0, 0, 1, 0, 0, 0, 10, 0, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 0.1, 0, 0, 0, 1, 0, 0, 0)
 shape = SubResource("BoxShape3D_a202f")
 debug_color = Color(0.866252, 0.355172, 0.000146703, 0.42)
 
-[node name="StaticBody3D2" type="StaticBody3D" parent="."]
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 0)
-mesh = SubResource("BoxMesh_noarx")
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer"]
+offset_right = 40.0
+offset_bottom = 40.0
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 0)
-shape = SubResource("BoxShape3D_a0tk4")
-debug_color = Color(0.0733333, 0, 0.08, 0.419608)
+[node name="aka" type="Label" parent="CanvasLayer/VBoxContainer"]
+layout_mode = 2
 
-[node name="StaticBody3D3" type="StaticBody3D" parent="."]
+[node name="ki" type="Label" parent="CanvasLayer/VBoxContainer"]
+layout_mode = 2
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D3"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.983881, 0)
-mesh = SubResource("BoxMesh_jka67")
+[node name="ao" type="Label" parent="CanvasLayer/VBoxContainer"]
+layout_mode = 2
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D3"]
+[node name="kuro" type="Label" parent="CanvasLayer/VBoxContainer"]
+layout_mode = 2
