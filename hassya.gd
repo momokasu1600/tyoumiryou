@@ -1,5 +1,7 @@
 extends Node3D
 
+@export var image_sprite: Sprite3D #
+
 @export var bullet_scene: PackedScene
 @export var red_bullet_scene: PackedScene
 @export var blue_bullet_scene: PackedScene
@@ -26,7 +28,9 @@ func _input(event):
 		erabu = (erabu+1) % bullet_scenes.size()                      
 	if event.is_action_pressed("shoot"):
 		shoot_bullet()
-
+	if event.is_action_pressed("kettei"):
+		print("「kettei」キーが押されました！")
+		hyouji()
 func shoot_bullet():
 	var current_bullet_name = bullet_names[erabu]
 	bullet_counts[current_bullet_name] += 1
@@ -48,3 +52,11 @@ func update_count_display():
 		blue_label.text = "緑弾: " + str(bullet_counts["緑"])
 	if black_label:
 		black_label.text = "黄弾: " + str(bullet_counts["黄"])
+
+func hyouji():
+	
+	
+	if image_sprite:
+		
+		image_sprite.visible = not image_sprite.visible # 表示・非表示を切り替え
+		
