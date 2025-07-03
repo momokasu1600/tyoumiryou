@@ -1,0 +1,5 @@
+[gd_scene load_steps=2 format=3 uid="uid://csu0fvxgf6cy8"]
+
+[ext_resource type="PackedScene" uid="uid://c308pwmx2dbts" path="res://naan.glb" id="1_yq750"]
+
+[node name="Sketchfab_Scene" instance=ExtResource("1_yq750")]
