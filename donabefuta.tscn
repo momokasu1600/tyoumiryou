@@ -1,0 +1,5 @@
+[gd_scene load_steps=2 format=3 uid="uid://bwlan6deko2j7"]
+
+[ext_resource type="PackedScene" uid="uid://bo2certcg4x0" path="res://donabefuta.glb" id="1_vor06"]
+
+[node name="donabefuta" instance=ExtResource("1_vor06")]
