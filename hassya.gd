@@ -32,6 +32,9 @@ var bullet_counts = {"赤": 0, "青": 0, "緑": 0, "黄": 0}
 #鍋震え
 @export var pot_body_node: Node3D
 
+#カレー
+@export var finished_curry_mesh: Node3D
+
 # --- 関数の定義 ---
 
 func _ready():
@@ -45,6 +48,9 @@ func _ready():
 		
 	# 【この一行を追加！】コントローラーの合図と、これから作る関数を結びつける
 	PicoWController.seasoning_added.connect(_on_controller_shaken)
+	#カレーの表示
+	if finished_curry_mesh:
+		finished_curry_mesh.visible = false
 
 func _input(event):
 	# 弾の切り替え
@@ -56,9 +62,9 @@ func _input(event):
 		shoot_bullet()
 	
 	
-	# 【修正】Enterキーでフタを閉めるように変更
+	# Enterキーでフタを閉めるように変更
 	if event.is_action_pressed("ui_accept"):
-		close_lid()
+		carryscene()
 
 func shoot_bullet():
 	var current_bullet_name = bullet_names[erabu]
@@ -80,32 +86,36 @@ func update_count_display():
 		blue_label.text = "緑弾: " + str(bullet_counts["緑"])
 	if black_label:
 		black_label.text = "黄弾: " + str(bullet_counts["黄"])
+		
+func carryscene():
+	await close_lid()
 
-# 【追記】フタを閉めるアニメーションを実行する関数
+	await shake_pot()
+	
+	if finished_curry_mesh:
+		finished_curry_mesh.visible = true
+
+	await open_lid()
+
 func close_lid():
-	# 必要なノードが設定されているか確認
-	if not (lid_node and lid_closed_marker):
-		print("エラー: Lid NodeかLid Closed Markerがインスペクターで設定されていません。")
+	if not (lid_node and lid_closed_marker): return
+	var tween = create_tween()
+	tween.tween_property(lid_node, "global_transform", lid_closed_marker.global_transform, 1.0)
+	await tween.finished # アニメーションが終わるのを待つ
+	
+# フタを開ける
+func open_lid():
+	if not (lid_node and lid_open_marker):
+		print("エラー: Lid NodeかLid Open Markerが設定されていません。")
 		return
 
-	# 新しいTween（アニメーション）を作成
 	var tween = create_tween()
-	# 位置と回転のアニメーションを並行して実行
-	tween.set_parallel(true)
 	
-	# 位置を目標マーカーの位置まで1秒かけて動かす
-	tween.tween_property(lid_node, "global_position", lid_closed_marker.global_position, 1.0)
-	# 回転を目標マーカーの回転まで1秒かけて動かす
-	tween.tween_property(lid_node, "global_rotation", lid_closed_marker.global_rotation, 1.0)
-	await tween.finished
-	await shake_pot()
-	hyouji()
+	tween.tween_property(lid_node, "global_transform", lid_open_marker.global_transform, 1.0)
+	await tween.finished 
 	
-func hyouji():
-	if image_sprite:
-		image_sprite.visible = not image_sprite.visible
 
-# 【追記】鍋を揺らすアニメーションを実行する関数
+#鍋を揺らすアニメーション
 func shake_pot():
 	# 鍋本体が設定されていなければ何もしない
 	if not pot_body_node:
@@ -123,10 +133,8 @@ func shake_pot():
 	tween.tween_property(pot_body_node, "rotation_degrees:z", -2.0-i, 0.05)
 	
 	# ↑これを5回繰り返す
-
 	# アニメーションが終わるのを待つ
 	await tween.finished
-	
 	# 最後に鍋の傾きをまっすぐに戻す
 	pot_body_node.rotation_degrees.z = 0
 	

@@ -1,0 +1,84 @@
+[gd_scene load_steps=7 format=3 uid="uid://dhbjdm2riuk84"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ilxrb"]
+albedo_color = Color(0.213981, 0.106674, 6.01634e-08, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_wg713"]
+material = SubResource("StandardMaterial3D_ilxrb")
+height = 0.15
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_go651"]
+albedo_color = Color(0.552941, 0.309804, 0.2, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_5q7og"]
+material = SubResource("StandardMaterial3D_go651")
+size = Vector3(0.1, 0.1, 0.1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xvh0g"]
+albedo_color = Color(0.975638, 0.338324, 0, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_tma0v"]
+material = SubResource("StandardMaterial3D_xvh0g")
+size = Vector3(0.1, 0.1, 0.1)
+
+[node name="Node3D" type="Node3D"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(28.1008, 0, 0, 0, 28.1008, 0, 0, 0, 28.1008, -1.13475, 1.52938, 0.452653)
+mesh = SubResource("CylinderMesh_wg713")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
+transform = Transform3D(23.3924, -15.5707, -2.49585e-14, 14.06, 21.1228, 12.0747, -6.69062, -10.0515, 25.3743, 9.3708, 3.53565, -3.19243)
+mesh = SubResource("BoxMesh_5q7og")
+
+[node name="MeshInstance3D7" type="MeshInstance3D" parent="."]
+transform = Transform3D(24.1036, 10.0791, 10.3482, -12.8026, 24.2288, 6.22199, -6.69062, -10.0515, 25.3743, -3.63195, 3.53565, 9.25149)
+mesh = SubResource("BoxMesh_5q7og")
+
+[node name="MeshInstance3D8" type="MeshInstance3D" parent="."]
+transform = Transform3D(23.3924, -15.5707, -2.49585e-14, 14.06, 21.1228, 12.0747, -6.69062, -10.0515, 25.3743, -5.87349, 3.53565, 0.452653)
+mesh = SubResource("BoxMesh_5q7og")
+
+[node name="MeshInstance3D9" type="MeshInstance3D" parent="."]
+transform = Transform3D(19.9138, -19.6635, -2.53849, 18.6636, 17.3772, 11.8048, -6.69062, -10.0515, 25.3743, 1.25976, 3.41673, -8.56436)
+mesh = SubResource("BoxMesh_5q7og")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="."]
+transform = Transform3D(14.7731, -23.3012, -5.33501, 22.9973, 15.5652, -4.30155, 6.52195, -2.1047, 27.2523, -9.13257, 2.90361, 4.95196)
+mesh = SubResource("BoxMesh_5q7og")
+
+[node name="MeshInstance3D4" type="MeshInstance3D" parent="."]
+transform = Transform3D(14.7731, -23.3012, -5.33501, 23.9042, 14.4042, 3.28076, 0.0142554, -6.26303, 27.3939, 5.45669, 3.54666, 6.38573)
+mesh = SubResource("BoxMesh_5q7og")
+
+[node name="MeshInstance3D5" type="MeshInstance3D" parent="."]
+transform = Transform3D(-26.6922, 5.5426, 6.81598, -5.88576, -27.4682, -0.712812, 6.52195, -2.1047, 27.2523, 0.424923, 3.54666, 5.13949)
+mesh = SubResource("BoxMesh_5q7og")
+
+[node name="MeshInstance3D6" type="MeshInstance3D" parent="."]
+transform = Transform3D(14.7731, -23.3012, -5.33501, 22.9973, 15.5652, -4.30155, 6.52195, -2.1047, 27.2523, 5.21997, 3.54666, 0.452653)
+mesh = SubResource("BoxMesh_5q7og")
+
+[node name="MeshInstance3D10" type="MeshInstance3D" parent="."]
+transform = Transform3D(15.6748, -19.7159, 12.4595, 22.9973, 15.5652, -4.30155, -3.88338, 12.5961, 24.8176, 0.253615, 3.54666, -3.52101)
+mesh = SubResource("BoxMesh_5q7og")
+
+[node name="MeshInstance3D11" type="MeshInstance3D" parent="."]
+transform = Transform3D(15.6748, -19.7159, 12.4595, 22.9973, 15.5652, -4.30155, -3.88338, 12.5961, 24.8176, -5.57621, 3.54666, -6.6833)
+mesh = SubResource("BoxMesh_5q7og")
+
+[node name="ninjin" type="MeshInstance3D" parent="."]
+transform = Transform3D(27.6049, 3.25794, -4.12438, -4.23655, 26.8433, -7.1515, 3.11069, 7.6471, 26.8607, -0.357274, 4.04256, 0.294902)
+mesh = SubResource("BoxMesh_tma0v")
+
+[node name="ninjin2" type="MeshInstance3D" parent="."]
+transform = Transform3D(27.8381, -3.01645, -2.36511, 2.23972, 26.8715, -7.90954, 3.11069, 7.6471, 26.8607, 9.57477, 4.04256, 3.04414)
+mesh = SubResource("BoxMesh_tma0v")
+
+[node name="ninjin3" type="MeshInstance3D" parent="."]
+transform = Transform3D(21.5954, 0.481949, -17.9739, 17.5675, 5.41955, 21.2524, 3.83096, -27.569, 3.86361, -9.68745, 4.04256, -3.53227)
+mesh = SubResource("BoxMesh_tma0v")
+
+[node name="ninjin4" type="MeshInstance3D" parent="."]
+transform = Transform3D(8.3031, -2.59095, -26.7208, 26.5713, 4.78443, 7.79276, 3.83096, -27.569, 3.86361, 4.46125, 4.04256, -5.18284)
+mesh = SubResource("BoxMesh_tma0v")
