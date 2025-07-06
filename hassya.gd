@@ -42,6 +42,9 @@ func _ready():
 	# 【追記】フタを必ず「開いた位置」からスタートさせる
 	if lid_node and lid_open_marker:
 		lid_node.global_transform = lid_open_marker.global_transform
+		
+	# 【この一行を追加！】コントローラーの合図と、これから作る関数を結びつける
+	PicoWController.seasoning_added.connect(_on_controller_shaken)
 
 func _input(event):
 	# 弾の切り替え
@@ -126,3 +129,10 @@ func shake_pot():
 	
 	# 最後に鍋の傾きをまっすぐに戻す
 	pot_body_node.rotation_degrees.z = 0
+	
+# コントローラーが振られた、という合図を受け取るための関数
+func _on_controller_shaken(amount):
+	print("コントローラーからの合図を受信！ 強さ: ", amount)
+	
+	# 既存の弾発射関数を呼び出す！
+	shoot_bullet()
