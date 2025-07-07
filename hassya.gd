@@ -103,7 +103,7 @@ func carryscene():
 	
 	# (2) 計算した評価を、グローバルな場所にある ScoreManager の変数に保存する
 	ScoreManager.curry_evaluation_text = evaluation
-	
+	await get_tree().create_timer(5.0).timeout
 	# (3) リザルトシーンに移動する
 	get_tree().change_scene_to_file("res://result.tscn")
 	
