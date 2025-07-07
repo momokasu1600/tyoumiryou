@@ -89,13 +89,24 @@ func update_count_display():
 		
 func carryscene():
 	await close_lid()
-
 	await shake_pot()
 	
 	if finished_curry_mesh:
 		finished_curry_mesh.visible = true
 
 	await open_lid()
+	
+	# --- ここから下が確定コード ---
+	
+	# (1) 評価を計算する
+	var evaluation = evaluate_curry()
+	
+	# (2) 計算した評価を、グローバルな場所にある ScoreManager の変数に保存する
+	ScoreManager.curry_evaluation_text = evaluation
+	
+	# (3) リザルトシーンに移動する
+	get_tree().change_scene_to_file("res://result.tscn")
+	
 
 func close_lid():
 	if not (lid_node and lid_closed_marker): return
@@ -144,3 +155,21 @@ func _on_controller_shaken(amount):
 	
 	# 既存の弾発射関数を呼び出す！
 	shoot_bullet()
+func evaluate_curry():
+	var red = bullet_counts["赤"]
+	var blue = bullet_counts["青"]
+	var green = bullet_counts["緑"]
+	var yellow = bullet_counts["黄"]
+	
+	if red > 10 && blue > 5:
+		return "情熱と冷静さが生んだ\n奇跡のスパイシーカレー！"
+	elif red > 15:
+		return "辛さの向こう側を見た！\n超絶スパイシーカレー！"
+	elif blue > 15:
+		return "海の恵みを全て凝縮！\n濃厚シーフードカレー！"
+	elif green > 0 && yellow > 0 && red == 0 && blue == 0:
+		return "お野菜たっぷり！\nヘルシーで優しい味のカレー！"
+	elif red == 0 && blue == 0 && green == 0 && yellow == 0:
+		return "何も入れなかった…\nこれはただのベースです。"
+	else:
+		return "いろんな味がする…\n新時代のスタンダードカレー！"
