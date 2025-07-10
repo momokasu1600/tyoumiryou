@@ -34,6 +34,10 @@ var bullet_counts = {"赤": 0, "青": 0, "緑": 0, "黄": 0}
 
 #カレー
 @export var finished_curry_mesh: Node3D
+#naan
+@export var naan_scene: PackedScene
+# ナーンの出現位置を紐づけるための変数
+@export var naan_spawn_marker: Marker3D
 
 # --- 関数の定義 ---
 
@@ -88,6 +92,16 @@ func update_count_display():
 		black_label.text = "黄弾: " + str(bullet_counts["黄"])
 		
 func carryscene():
+	# --- ここから追記 ---
+	# 1. ナーンのシーンと出現位置が設定されているか確認
+	if naan_scene and naan_spawn_marker:
+		# 2. ナーンのインスタンス（実体）を作る
+		var naan_instance = naan_scene.instantiate()
+		# 3. 作ったナーンをシーンに追加する
+		get_tree().current_scene.add_child(naan_instance)
+		# 4. ナーンを上から落とすための出現位置にセットする
+		naan_instance.global_transform = naan_spawn_marker.global_transform
+		
 	await close_lid()
 	await shake_pot()
 	
