@@ -86,7 +86,7 @@ func _input(event):
 					for i in range(8): # 8個のカケラを生成
 						var chunk = chunk_scene.instantiate()
 						add_child(chunk)
-						chunk.global_position = cut_position
+						chunk.global_transform.origin = cut_position
 						var random_dir = Vector3(randf_range(-1, 1), randf_range(1.2, 2.0), randf_range(-1, 1)).normalized()
 						chunk.apply_central_impulse(random_dir * randf_range(0.5, 2))
 				
