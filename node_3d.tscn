@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=4 uid="uid://cbu08yhurrlih"]
+[gd_scene load_steps=22 format=4 uid="uid://cbu08yhurrlih"]
 
 [ext_resource type="Script" uid="uid://cim504qw4ukx0" path="res://hassya.gd" id="1_a202f"]
 [ext_resource type="PackedScene" uid="uid://ckjlp5mpab3ds" path="res://tama.tscn" id="2_noarx"]
@@ -7,6 +7,9 @@
 [ext_resource type="PackedScene" uid="uid://0hv8a2dn6k1a" path="res://tama3.tscn" id="5_wc5p8"]
 [ext_resource type="PackedScene" uid="uid://x6v3fah0p17e" path="res://naan.tscn" id="6_6iypd"]
 [ext_resource type="Texture2D" uid="uid://d2wbsuq322ee7" path="res://PXL_20250411_0806467862.jpg" id="6_i5arm"]
+[ext_resource type="PackedScene" uid="uid://804wn4shl8ni" path="res://jaga.tscn" id="6_tereu"]
+[ext_resource type="PackedScene" uid="uid://de8taawq4bak" path="res://ninjin.tscn" id="7_cdqbm"]
+[ext_resource type="PackedScene" uid="uid://cd2wqg3x1ja78" path="res://materialclash.tscn" id="8_imku0"]
 [ext_resource type="PackedScene" uid="uid://dhbjdm2riuk84" path="res://carry.tscn" id="9_4arys"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_4xowi"]
@@ -103,25 +106,28 @@ data = PackedVector3Array(0, -0.0007, -1.2838, 0.2554, -0.0167, -1.2838, 0.2505,
 
 [node name="Node3D" type="Node3D"]
 
-[node name="Camera3D" type="Camera3D" parent="." node_paths=PackedStringArray("image_sprite", "normal_label", "red_label", "blue_label", "black_label", "lid_node", "lid_open_marker", "lid_closed_marker", "pot_body_node", "finished_curry_mesh", "naan_spawn_marker")]
+[node name="Camera3D" type="Camera3D" parent="." node_paths=PackedStringArray("cutting_label", "normal_label", "red_label", "blue_label", "black_label", "naan_spawn_marker", "lid_node", "lid_open_marker", "lid_closed_marker", "pot_body_node", "finished_curry_mesh")]
 transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, -0.19127, 15.0701, 19.6888)
 script = ExtResource("1_a202f")
-image_sprite = NodePath("../AnimationPlayer2/StaticBody3D2/Sprite3D")
 bullet_scene = ExtResource("3_jka67")
 red_bullet_scene = ExtResource("4_i5arm")
 blue_bullet_scene = ExtResource("5_wc5p8")
 black_bullet_scene = ExtResource("2_noarx")
+potato_scene = ExtResource("6_tereu")
+carrot_scene = ExtResource("7_cdqbm")
+chunk_scene = ExtResource("8_imku0")
+cutting_label = NodePath("../Label")
 normal_label = NodePath("../CanvasLayer/VBoxContainer/aka")
 red_label = NodePath("../CanvasLayer/VBoxContainer/ki")
 blue_label = NodePath("../CanvasLayer/VBoxContainer/ao")
 black_label = NodePath("../CanvasLayer/VBoxContainer/kuro")
+naan_scene = ExtResource("6_6iypd")
+naan_spawn_marker = NodePath("../naanOpenMarker")
 lid_node = NodePath("../AnimationPlayer2/StaticBody3D2/StaticBody3D3")
 lid_open_marker = NodePath("../LidOpenMarker")
 lid_closed_marker = NodePath("../LidClosedMarker")
 pot_body_node = NodePath("../AnimationPlayer2/StaticBody3D2")
 finished_curry_mesh = NodePath("../AnimationPlayer2/StaticBody3D2/Node3D")
-naan_scene = ExtResource("6_6iypd")
-naan_spawn_marker = NodePath("../naanOpenMarker")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 0, 4)
@@ -200,7 +206,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 103, 0)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 75.5226, 0)
 
 [node name="Label" type="Label" parent="."]
-visible = false
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5

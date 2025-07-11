@@ -1,9 +1,6 @@
 extends Node3D
 
-# --- 変数宣言（すべてここにまとめる） ---
-
-# 画像表示用
-@export var image_sprite: Sprite3D
+# --- 変数宣言 ---
 
 # 弾の発射用
 @export var bullet_scene: PackedScene
@@ -12,32 +9,41 @@ extends Node3D
 @export var black_bullet_scene: PackedScene
 @export var bullet_speed: float = 20.0
 
+# 材料シーンとカケラシーン
+@export var potato_scene: PackedScene
+@export var carrot_scene: PackedScene
+@export var chunk_scene: PackedScene
+
 # UIラベル用
+@export var cutting_label: Label
 @export var normal_label: Label
 @export var red_label: Label
 @export var blue_label: Label
 @export var black_label: Label
 
-# 【追記】フタの開閉用
+# ナーン用
+@export var naan_scene: PackedScene
+@export var naan_spawn_marker: Marker3D
+
+# フタ用
 @export var lid_node: Node3D
 @export var lid_open_marker: Marker3D
 @export var lid_closed_marker: Marker3D
 
-# 内部で使う変数
+# 鍋本体とカレー用
+@export var pot_body_node: Node3D
+@export var finished_curry_mesh: Node3D
+
+# --- 内部で使う変数 ---
 var bullet_scenes = []
 var erabu = 0
 var bullet_names = ["赤", "青", "緑", "黄"]
 var bullet_counts = {"赤": 0, "青": 0, "緑": 0, "黄": 0}
 
-#鍋震え
-@export var pot_body_node: Node3D
-
-#カレー
-@export var finished_curry_mesh: Node3D
-#naan
-@export var naan_scene: PackedScene
-# ナーンの出現位置を紐づけるための変数
-@export var naan_spawn_marker: Marker3D
+# 今が「切るフェーズ」かどうかを管理する変数
+var is_cutting_phase: bool = true
+# 出現させた材料オブジェクトを覚えておく配列
+var material_objects = []
 
 # --- 関数の定義 ---
 
@@ -55,20 +61,61 @@ func _ready():
 	#カレーの表示
 	if finished_curry_mesh:
 		finished_curry_mesh.visible = false
+		
+	is_cutting_phase = true
+	spawn_materials() # 材料を出現させる
+	
+	# ラベルの表示を初期化
+	if cutting_label:
+		cutting_label.visible = true
+	if normal_label:
+		normal_label.visible = false
 
 func _input(event):
+	if is_cutting_phase:
+		if event.is_action_pressed("cut_material"): # Cキーが押されたら
+			# 材料がまだ残っているかチェック
+			if not material_objects.is_empty():
+				# 配列の最後から材料を一つ取り出す
+				var material_to_cut = material_objects.pop_back()
+				var cut_position = material_to_cut.global_position
+				material_to_cut.queue_free() # 元の材料を消す
+
+				# カケラを生成して飛び散らせる
+				if chunk_scene:
+					for i in range(8): # 8個のカケラを生成
+						var chunk = chunk_scene.instantiate()
+						add_child(chunk)
+						chunk.global_position = cut_position
+						var random_dir = Vector3(randf_range(-1, 1), randf_range(1.2, 2.0), randf_range(-1, 1)).normalized()
+						chunk.apply_central_impulse(random_dir * randf_range(0.5, 2))
+				
+				# UIを更新
+				if cutting_label:
+					cutting_label.text = "Cキーで材料を切ろう！ (残り %d 個)" % material_objects.size()
+			
+			# もし、もう切るべき材料が残っていなければ…
+			if material_objects.is_empty():
+				is_cutting_phase = false # フェーズを発射モードに切り替える！
+				if cutting_label:
+					cutting_label.text = "発射OK！"
+					await get_tree().create_timer(1.5).timeout
+					cutting_label.visible = false
+				if normal_label:
+					normal_label.visible = true # 弾数ラベルを表示
+	else:				
 	# 弾の切り替え
-	if event.is_action_pressed("kirikae"):
-		erabu = (erabu + 1) % bullet_scenes.size()
+		if event.is_action_pressed("kirikae"):
+			erabu = (erabu + 1) % bullet_scenes.size()
 	
 	# 弾の発射
-	if event.is_action_pressed("shoot"):
-		shoot_bullet()
+		if event.is_action_pressed("shoot"):
+			shoot_bullet()
 	
 	
 	# Enterキーでフタを閉めるように変更
-	if event.is_action_pressed("ui_accept"):
-		carryscene()
+		if event.is_action_pressed("ui_accept"):
+			carryscene()
 
 func shoot_bullet():
 	var current_bullet_name = bullet_names[erabu]
@@ -187,3 +234,28 @@ func evaluate_curry():
 		return "何も入れなかった…\nこれはただのベースです。"
 	else:
 		return "いろんな味がする…\n新時代のスタンダードカレー！"
+
+#斬
+func spawn_materials():
+	# 前の材料が残っていたら消す
+	for mat in material_objects:
+		mat.queue_free()
+	material_objects.clear()
+
+	# ジャガイモを生成
+	if potato_scene:
+		var potato = potato_scene.instantiate()
+		add_child(potato)
+		potato.position = Vector3(0.2,3, -3)
+		material_objects.append(potato)
+
+	# ニンジンを生成
+	if carrot_scene:
+		var carrot = carrot_scene.instantiate()
+		add_child(carrot)
+		carrot.position = Vector3(0.3, 3, -3)
+		material_objects.append(carrot)
+
+	# UIを更新
+	if cutting_label:
+		cutting_label.text = "Cキーで材料を切ろう！ (残り %d 個)" % material_objects.size()
