@@ -1,7 +1,7 @@
 extends Node3D
 
 # --- 変数宣言 ---
-
+@export var explosion_scene: PackedScene
 # 弾の発射用
 @export var bullet_scene: PackedScene
 @export var red_bullet_scene: PackedScene
@@ -185,7 +185,14 @@ func open_lid():
 	
 	tween.tween_property(lid_node, "global_transform", lid_open_marker.global_transform, 1.0)
 	await tween.finished 
-	
+	if explosion_scene:
+		var explosion_instance = explosion_scene.instantiate()
+		# 鍋本体が設定されていれば、その位置に爆発を発生させる
+		if pot_body_node:
+			explosion_instance.global_position = pot_body_node.global_position
+		
+		# 作った爆発をシーンに追加する
+		add_child(explosion_instance)
 
 #鍋を揺らすアニメーション
 func shake_pot():
