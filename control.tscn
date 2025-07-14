@@ -23,7 +23,7 @@ offset_top = 301.0
 offset_right = 1113.57
 offset_bottom = 370.0
 theme_override_font_sizes/font_size = 50
-text = "カレーおいしい、おいしいカレー"
+text = "मसाला मिशन"
 
 [node name="TextureRect" type="TextureRect" parent="."]
 layout_mode = 0
