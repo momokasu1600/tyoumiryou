@@ -124,6 +124,7 @@ func shoot_bullet():
 	update_count_display()
 	
 	var bullet: RigidBody3D = bullet_scenes[erabu].instantiate()
+
 	get_tree().current_scene.add_child(bullet)
 	bullet.global_transform = self.global_transform
 	bullet.apply_central_impulse(Vector3.FORWARD.rotated(Vector3.UP, global_rotation.y) * bullet_speed)
