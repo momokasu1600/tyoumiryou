@@ -14,11 +14,12 @@ linear_accel_max = -1.0
 [sub_resource type="QuadMesh" id="QuadMesh_16uck"]
 
 [node name="Node3D" type="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -728.604, 45.4785, 0)
 
 [node name="Explosion1" type="GPUParticles3D" parent="."]
-transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10.04, -0.00112057, -0.00427759, -0.00190479)
+transform = Transform3D(20, 0, 0, 0, 20, 0, 0, 0, 20.08, -0.00112057, -0.00427759, -0.00190479)
 material_override = ExtResource("1_an4hs")
-amount = 20
+amount = 50
 lifetime = 2.13
 explosiveness = 0.91
 randomness = 0.84
@@ -28,9 +29,9 @@ process_material = SubResource("ParticleProcessMaterial_rva4e")
 draw_pass_1 = SubResource("QuadMesh_16uck")
 
 [node name="Explosion2" type="GPUParticles3D" parent="."]
-transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10.04, -0.00112057, -0.00427759, -0.00190479)
+transform = Transform3D(20, 0, 0, 0, 20, 0, 0, 0, 20.08, -0.00112057, -0.00427759, -0.00190479)
 material_override = ExtResource("1_an4hs")
-amount = 5
+amount = 50
 lifetime = 2.13
 randomness = 0.84
 fixed_fps = 60
