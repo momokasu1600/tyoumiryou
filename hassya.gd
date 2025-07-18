@@ -50,7 +50,6 @@ var material_objects = []
 func _ready():
 	# 既存の処理
 	bullet_scenes = [bullet_scene, red_bullet_scene, blue_bullet_scene, black_bullet_scene]
-	update_count_display()
 	
 	# 【追記】フタを必ず「開いた位置」からスタートさせる
 	if lid_node and lid_open_marker:
@@ -121,7 +120,6 @@ func shoot_bullet():
 	var current_bullet_name = bullet_names[erabu]
 	bullet_counts[current_bullet_name] += 1
 	
-	update_count_display()
 	
 	var bullet: RigidBody3D = bullet_scenes[erabu].instantiate()
 
@@ -129,46 +127,74 @@ func shoot_bullet():
 	bullet.global_transform = self.global_transform
 	bullet.apply_central_impulse(Vector3.FORWARD.rotated(Vector3.UP, global_rotation.y) * bullet_speed)
 
-func update_count_display():
-	if normal_label:
-		normal_label.text = "赤弾: " + str(bullet_counts["赤"])
-	if red_label:
-		red_label.text = "青弾: " + str(bullet_counts["青"])
-	if blue_label:
-		blue_label.text = "緑弾: " + str(bullet_counts["緑"])
-	if black_label:
-		black_label.text = "黄弾: " + str(bullet_counts["黄"])
 		
 func carryscene():
-	# --- ここから追記 ---
-	# 1. ナーンのシーンと出現位置が設定されているか確認
+	# --- ナーンの処理 (変更なし) ---
 	if naan_scene and naan_spawn_marker:
-		# 2. ナーンのインスタンス（実体）を作る
 		var naan_instance = naan_scene.instantiate()
-		# 3. 作ったナーンをシーンに追加する
 		get_tree().current_scene.add_child(naan_instance)
-		# 4. ナーンを上から落とすための出現位置にセットする
 		naan_instance.global_transform = naan_spawn_marker.global_transform
 		
 	await close_lid()
 	await shake_pot()
 	
 	if finished_curry_mesh:
+		# --- 色の計算 (変更なし) ---
+		var r_val = float(bullet_counts["赤"] + bullet_counts["黄"])
+		var g_val = float(bullet_counts["緑"] + bullet_counts["黄"])
+		var b_val = float(bullet_counts["青"])
+		
+		var final_color: Color
+		var total_val = r_val + g_val + b_val
+
+		if total_val > 0:
+			final_color = Color(r_val / total_val, g_val / total_val, b_val / total_val)
+		else:
+			final_color = Color("8B4513")
+
+		print("完成したカレーの色: ", final_color)
+
+		# ★★★★★ ここからが最終修正コード ★★★★★
+		
+		# 1. まず、色を塗りたい「カレーの土台」のノード名を変数に入れます。
+		#    下の "ここに土台のノード名を入力" の部分を、
+		#    手順1で確認した実際のノード名に書き換えてください。
+		var curry_base_node_name = "base" 
+		
+		# 2. 親ノード(finished_curry_mesh)の中から、その名前の子ノードを探します
+		var curry_base_node = finished_curry_mesh.get_node_or_null(curry_base_node_name)
+
+		# 3. ノードが見つかり、それがMeshInstance3Dだった場合のみ色を変更します
+		if curry_base_node and curry_base_node is MeshInstance3D:
+			print("デバッグ: カレーの土台 (", curry_base_node.name, ") を見つけました。")
+			
+			var base_material = curry_base_node.get_surface_override_material(0)
+			if not base_material and curry_base_node.mesh:
+				base_material = curry_base_node.mesh.surface_get_material(0)
+
+			if base_material:
+				var unique_material = base_material.duplicate()
+				if unique_material is StandardMaterial3D:
+					unique_material.albedo_color = final_color
+					curry_base_node.set_surface_override_material(0, unique_material)
+					print("デバッグ: 土台のマテリアルを更新しました。")
+				else:
+					print("警告: 土台のマテリアルはStandardMaterial3Dではありません。")
+			else:
+				print("警告: 土台のメッシュにベースマテリアルが見つかりません。")
+		else:
+			print("エラー: '", curry_base_node_name, "' という名前のMeshInstance3Dが見つかりませんでした。ノード名が正しいか、種類がMeshInstance3Dか確認してください。")
+		
+		# ★★★★★ 修正コードここまで ★★★★★
+		
 		finished_curry_mesh.visible = true
 
 	await open_lid()
 	
-	# --- ここから下が確定コード ---
-	
-	# (1) 評価を計算する
 	var evaluation = evaluate_curry()
-	
-	# (2) 計算した評価を、グローバルな場所にある ScoreManager の変数に保存する
 	ScoreManager.curry_evaluation_text = evaluation
 	await get_tree().create_timer(5.0).timeout
-	# (3) リザルトシーンに移動する
 	get_tree().change_scene_to_file("res://result.tscn")
-	
 
 func close_lid():
 	if not (lid_node and lid_closed_marker): return
@@ -185,14 +211,14 @@ func open_lid():
 	var tween = create_tween()
 	
 	tween.tween_property(lid_node, "global_transform", lid_open_marker.global_transform, 1.0)
-	await tween.finished 
+	await tween.finished
+	
+	# 色変更の処理を削除し、爆発のインスタンス化だけを行う
 	if explosion_scene:
 		var explosion_instance = explosion_scene.instantiate()
-		# 鍋本体が設定されていれば、その位置に爆発を発生させる
 		if pot_body_node:
 			explosion_instance.global_position = pot_body_node.global_position
 		
-		# 作った爆発をシーンに追加する
 		add_child(explosion_instance)
 
 #鍋を揺らすアニメーション

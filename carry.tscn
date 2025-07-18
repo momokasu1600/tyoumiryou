@@ -23,7 +23,7 @@ size = Vector3(0.1, 0.1, 0.1)
 
 [node name="Node3D" type="Node3D"]
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+[node name="base" type="MeshInstance3D" parent="."]
 transform = Transform3D(28.1008, 0, 0, 0, 28.1008, 0, 0, 0, 28.1008, -1.13475, 1.52938, 0.452653)
 mesh = SubResource("CylinderMesh_wg713")
 
