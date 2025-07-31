@@ -256,11 +256,11 @@ func evaluate_curry():
 	var green = bullet_counts["緑"]
 	var yellow = bullet_counts["黄"]
 	
-	if red > 10 && blue > 5:
-		return "情熱と冷静さが生んだ\n奇跡のスパイシーカレー！"
-	elif red > 15:
+	if red > 30 && blue > 30&& green > 30&& red > 30:
+		return "もっと調味料が欲しい\n無味のコクなしカレー！"
+	elif red > 300:
 		return "辛さの向こう側を見た！\n超絶スパイシーカレー！"
-	elif blue > 15:
+	elif blue > 200:
 		return "海の恵みを全て凝縮！\n濃厚シーフードカレー！"
 	elif green > 0 && yellow > 0 && red == 0 && blue == 0:
 		return "お野菜たっぷり！\nヘルシーで優しい味のカレー！"
