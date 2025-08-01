@@ -120,7 +120,7 @@ sky = SubResource("Sky_tcnuu")
 
 [node name="Node3D" type="Node3D"]
 
-[node name="Camera3D" type="Camera3D" parent="." node_paths=PackedStringArray("cutting_label", "normal_label", "red_label", "blue_label", "black_label", "naan_spawn_marker", "lid_node", "lid_open_marker", "lid_closed_marker", "pot_body_node", "finished_curry_mesh", "shoot_sound_player", "shoot_timer", "timer_label")]
+[node name="Camera3D" type="Camera3D" parent="." node_paths=PackedStringArray("naan_spawn_marker", "lid_node", "lid_open_marker", "lid_closed_marker", "pot_body_node", "finished_curry_mesh", "shoot_sound_player", "shoot_timer", "timer_label")]
 transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, -0.19127, 15.0701, 19.6888)
 script = ExtResource("1_a202f")
 explosion_scene = ExtResource("2_wlxy5")
@@ -131,11 +131,6 @@ black_bullet_scene = ExtResource("2_noarx")
 potato_scene = ExtResource("6_tereu")
 carrot_scene = ExtResource("7_cdqbm")
 chunk_scene = ExtResource("8_imku0")
-cutting_label = NodePath("../Label")
-normal_label = NodePath("../CanvasLayer/VBoxContainer/aka")
-red_label = NodePath("../CanvasLayer/VBoxContainer/ki")
-blue_label = NodePath("../CanvasLayer/VBoxContainer/ao")
-black_label = NodePath("../CanvasLayer/VBoxContainer/kuro")
 naan_scene = ExtResource("6_6iypd")
 naan_spawn_marker = NodePath("../naanOpenMarker")
 lid_node = NodePath("../AnimationPlayer2/StaticBody3D2/StaticBody3D3")
