@@ -44,6 +44,13 @@ var bullet_counts = {"赤": 0, "青": 0, "緑": 0, "黄": 0}
 var is_cutting_phase: bool = true
 # 出現させた材料オブジェクトを覚えておく配列
 var material_objects = []
+#タイマー系
+@export var shoot_timer: Timer
+@export var timer_label: Label
+
+var time_is_up: bool = false
+
+var is_cooking: bool = false
 
 # --- 関数の定義 ---
 
@@ -69,52 +76,58 @@ func _ready():
 		cutting_label.visible = true
 	if normal_label:
 		normal_label.visible = false
+	if timer_label:
+		timer_label.visible = false
 
 func _input(event):
+	# 【変更】調理中は何もしない
+	if is_cooking:
+		return
+
 	if is_cutting_phase:
-		if event.is_action_pressed("cut_material"): # Cキーが押されたら
-			# 材料がまだ残っているかチェック
+		if event.is_action_pressed("cut_material"):
 			if not material_objects.is_empty():
-				# 配列の最後から材料を一つ取り出す
 				var material_to_cut = material_objects.pop_back()
 				var cut_position = material_to_cut.global_position
-				material_to_cut.queue_free() # 元の材料を消す
+				material_to_cut.queue_free()
 
-				# カケラを生成して飛び散らせる
 				if chunk_scene:
-					for i in range(8): # 8個のカケラを生成
+					for i in range(8):
 						var chunk = chunk_scene.instantiate()
 						add_child(chunk)
 						chunk.global_transform.origin = cut_position
 						var random_dir = Vector3(randf_range(-1, 1), randf_range(1.2, 2.0), randf_range(-1, 1)).normalized()
 						chunk.apply_central_impulse(random_dir * randf_range(0.5, 2))
 				
-				# UIを更新
 				if cutting_label:
 					cutting_label.text = "Cキーで材料を切ろう！ (残り %d 個)" % material_objects.size()
 			
-			# もし、もう切るべき材料が残っていなければ…
 			if material_objects.is_empty():
-				is_cutting_phase = false # フェーズを発射モードに切り替える！
+				is_cutting_phase = false
 				if cutting_label:
 					cutting_label.text = "発射OK！"
 					await get_tree().create_timer(1.5).timeout
 					cutting_label.visible = false
 				if normal_label:
-					normal_label.visible = true # 弾数ラベルを表示
-	else:				
-	# 弾の切り替え
+					normal_label.visible = true
+				
+				if shoot_timer:
+					shoot_timer.start(30.0)
+				if timer_label:
+					timer_label.visible = true
+	else: # 発射フェーズ
+		if time_is_up:
+			return # 時間切れ後は操作不能
+		
 		if event.is_action_pressed("kirikae"):
 			erabu = (erabu + 1) % bullet_scenes.size()
 	
-	# 弾の発射
 		if event.is_action_pressed("shoot"):
 			shoot_bullet()
 	
-	
-	# Enterキーでフタを閉めるように変更
-		if event.is_action_pressed("ui_accept"):
-			carryscene()
+		# エンターキーで手動で調理開始
+		#if event.is_action_pressed("ui_accept"):
+			#carryscene()
 
 func shoot_bullet():
 	var current_bullet_name = bullet_names[erabu]
@@ -129,6 +142,19 @@ func shoot_bullet():
 
 		
 func carryscene():
+	if is_cooking:
+		return
+	is_cooking = true # 調理開始！
+	
+	# タイマーが動いていたら止める
+	if shoot_timer and not shoot_timer.is_stopped():
+		shoot_timer.stop()
+	
+	# ラベルを非表示に
+	if timer_label:
+		timer_label.visible = false
+	if normal_label:
+		normal_label.visible = false
 	# --- ナーンの処理 (変更なし) ---
 	if naan_scene and naan_spawn_marker:
 		var naan_instance = naan_scene.instantiate()
@@ -293,3 +319,23 @@ func spawn_materials():
 	# UIを更新
 	if cutting_label:
 		cutting_label.text = "Cキーで材料を切ろう！ (残り %d 個)" % material_objects.size()
+
+# 【関数をまるごと追加】
+func _process(delta):
+	# 発射フェーズ中で、タイマーが動いているなら表示を更新
+	if not is_cutting_phase and shoot_timer and not shoot_timer.is_stopped():
+		if timer_label:
+			# 小数点以下1桁まで表
+			timer_label.text = "残り時間: %.f" % shoot_timer.time_left
+			
+
+func _on_timer_timeout() -> void:
+	print("時間切れ！")
+	time_is_up = true
+	
+	# 画面のラベルを更新
+	if timer_label:
+		timer_label.text = "時間切れ！"
+	
+	# 調理開始の合図を出す
+	carryscene()
