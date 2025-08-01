@@ -19,9 +19,15 @@ extends Node3D
 @export var pot_body_node: Node3D
 @export var finished_curry_mesh: Node3D
 @export var shoot_sound_player :AudioStreamPlayer
+@export var futa_close_player :AudioStreamPlayer
+@export var cut_sound_player :AudioStreamPlayer
 @export var shoot_timer: Timer
 @export var timer_label: Label
-
+@export var gauges_container: Control
+@export var red_percent_label: Label
+@export var blue_percent_label: Label
+@export var green_percent_label: Label
+@export var yellow_percent_label: Label
 # --- 内部で使う変数 ---
 var bullet_scenes = []
 var erabu = 0
@@ -66,10 +72,32 @@ func _ready():
 
 # --- ▼▼▼【追加】デバッグ用のキー入力関数 ▼▼▼ ---
 func _input(event):
-	# カットフェーズ中で、"cut_material" (Cキー) が押されたら
-	if is_cutting_phase and event.is_action_pressed("cut_material"):
-		print("DEBUG: Cutting with 'C' key.")
-		cut_one_material() # 10回振ったことにして、即座にカットする
+	# 調理中は何もしない
+	if is_cooking:
+		return
+
+	# --- 材料を切るフェーズの処理 ---
+	if is_cutting_phase:
+		# is_action_just_pressed が Godot 4 の機能なので、古いバージョンのために is_action と is_pressed を使います
+		if event.is_action("cut_material") and event.is_pressed():
+			
+			if not material_objects.is_empty():
+				cut_shake_count += 1
+				
+				var remaining_shakes = REQUIRED_SHAKES - cut_shake_count
+				if info_label:
+					info_label.text = "振ってカット！ (あと %d 回)" % remaining_shakes
+
+				if cut_shake_count >= REQUIRED_SHAKES:
+					cut_one_material()
+					cut_shake_count = 0
+	
+	# --- 発射フェーズの処理 (変更なし) ---
+	else: 
+		if time_is_up:
+			return
+		# ボタンでの調味料切り替えはPicoWControllerからの信号で行うため、ここでは不要
+		# shootも同様
 # --- ▲▲▲ 追加ここまで ▲▲▲ ---
 
 
@@ -90,13 +118,13 @@ func _on_cut_action_detected():
 		if cut_shake_count >= REQUIRED_SHAKES:
 			cut_one_material() # 実際にカットする
 			cut_shake_count = 0 # カウンターをリセット
-		
+		cut_sound_player.play()
 		# UIを更新して、残り回数を表示
 		update_info_label()
 
 # 【新設】材料を1つカットする共通処理
+# cut_one_material 関数をまるごと置き換えてください
 func cut_one_material():
-	# 材料が残っていなければ何もしない
 	if material_objects.is_empty():
 		return
 		
@@ -124,8 +152,24 @@ func cut_one_material():
 			shoot_timer.start(30.0)
 		if timer_label:
 			timer_label.visible = true
+			
+		# 【ここからテキストの初期化処理を追加】
+		if gauges_container:
+			gauges_container.visible = true
+
+		if red_percent_label:
+			red_percent_label.text = "ニンニク: 0%"
+			red_percent_label.visible = true
+		if blue_percent_label:
+			blue_percent_label.text = "カルダモン: 0%"
+			blue_percent_label.visible = true
+		if green_percent_label:
+			green_percent_label.text = "シナモン: 0%"
+			green_percent_label.visible = true
+		if yellow_percent_label:
+			yellow_percent_label.text = "しょうが: 0%"
+			yellow_percent_label.visible = true
 	else:
-		# まだ材料が残っているならUIを更新
 		update_info_label()
 
 # 【新設】「ボタン押し」の合図で調味料を切り替える関数
@@ -168,18 +212,48 @@ func update_info_label():
 		info_label.text = "種類: " + bullet_names[erabu]
 
 # 【変更】shoot_bullet関数は、振りの強さ(amount)を受け取るようにする（将来的な拡張のため）
+# shoot_bullet 関数をまるごと置き換えてください
 func shoot_bullet(amount):
 	var current_bullet_name = bullet_names[erabu]
 	bullet_counts[current_bullet_name] += 1
 	
+	# 【ここからパーセント表示更新処理】
+	match current_bullet_name:
+		"赤":
+			if red_percent_label:
+				var ideal_red = 125.0 # 合計600個の場合の理想値
+				var percent = int( (bullet_counts["赤"] / ideal_red) * 100.0 )
+				red_percent_label.text = "ニンニク: %d%%" % percent # %%で%記号を表示
+				if percent >= 70:
+					red_percent_label.visible = false
+		"青":
+			if blue_percent_label:
+				var ideal_blue = 38.0
+				var percent = int( (bullet_counts["青"] / ideal_blue) * 100.0 )
+				blue_percent_label.text = "カルダモン: %d%%" % percent
+				if percent >= 70:
+					blue_percent_label.visible = false
+		"緑":
+			if green_percent_label:
+				var ideal_green = 63.0
+				var percent = int( (bullet_counts["緑"] / ideal_green) * 100.0 )
+				green_percent_label.text = "シナモン: %d%%" % percent
+				if percent >= 70:
+					green_percent_label.visible = false
+		"黄":
+			if yellow_percent_label:
+				var ideal_yellow = 375.0
+				var percent = int( (bullet_counts["黄"] / ideal_yellow) * 100.0 )
+				yellow_percent_label.text = "しょうが: %d%%" % percent
+				if percent >= 70:
+					yellow_percent_label.visible = false
+	# 【パーセント表示更新ここまで】
+
 	var bullet: RigidBody3D = bullet_scenes[erabu].instantiate()
 	get_tree().current_scene.add_child(bullet)
 	bullet.global_transform = self.global_transform
 	bullet.apply_central_impulse(Vector3.FORWARD.rotated(Vector3.UP, global_rotation.y) * bullet_speed)
 	shoot_sound_player.play()
-
-# (以下、carryscene, close_lid, open_lid, shake_pot, evaluate_curry は変更なし)
-# ... (変更のない関数は省略) ...
 		
 func carryscene():
 	if is_cooking:
@@ -193,6 +267,9 @@ func carryscene():
 		timer_label.visible = false
 	if info_label:
 		info_label.visible = false
+	# 【追加】理想値テキストのコンテナを隠す
+	if gauges_container:
+		gauges_container.visible = false
 		
 	if naan_scene and naan_spawn_marker:
 		var naan_instance = naan_scene.instantiate()
@@ -247,6 +324,7 @@ func close_lid():
 func open_lid():
 	if not (lid_node and lid_open_marker): return
 	var tween = create_tween()
+	futa_close_player.play()
 	tween.tween_property(lid_node, "global_transform", lid_open_marker.global_transform, 1.0)
 	await tween.finished
 	
@@ -269,25 +347,83 @@ func shake_pot():
 	pot_body_node.rotation_degrees.z = 0
 	
 func evaluate_curry():
-	var red = bullet_counts["赤"]
-	var blue = bullet_counts["青"]
-	var green = bullet_counts["緑"]
-	var yellow = bullet_counts["黄"]
+	var red = float(bullet_counts["赤"])      # ニンニク (パンチ)
+	var blue = float(bullet_counts["青"])     # カルダモン (爽やか)
+	var green = float(bullet_counts["緑"])    # シナモン (甘み)
+	var yellow = float(bullet_counts["黄"])   # しょうが (温かさ)
+	var total = red + blue + green + yellow
 	
-	print(bullet_counts)
-	
-	if red > 30 && blue > 30&& green > 30&& red > 30:
-		return "もっと調味料が欲しい\n無味のコクなしカレー！"
-	elif red > 300:
-		return "辛さの向こう側を見た！\n超絶スパイシーカレー！"
-	elif blue > 200:
-		return "海の恵みを全て凝縮！\n濃厚シーフードカレー！"
-	elif green > 0 && yellow > 0 && red == 0 && blue == 0:
-		return "お野菜たっぷり！\nヘルシーで優しい味のカレー！"
-	elif red == 0 && blue == 0 && green == 0 && yellow == 0:
+	# --- 基本的な評価 ---
+	if total == 0:
 		return "何も入れなかった…\nこれはただのベースです。"
-	else:
-		return "いろんな味がする…\n新時代のスタンダードカレー！"
+	if total < 30:
+		return "もっと調味料が欲しい！\n味が薄すぎる、だし汁のようなカレー。"
+
+	# --- 黄金比の評価 (最上級) ---
+	# 理想値: ニンニク(125), カルダモン(38), シナモン(63), しょうが(375)
+	if red.is_equal_approx(total * 0.208) and \
+	   blue.is_equal_approx(total * 0.063) and \
+	   green.is_equal_approx(total * 0.104) and \
+	   yellow.is_equal_approx(total * 0.625):
+		return "まさに黄金比！\n全ての味が調和した、神々のカレー！"
+
+	# --- 特殊な組み合わせの評価 ---
+	# パワー系コンビ
+	if red > total * 0.4 and yellow > total * 0.4 and blue < total * 0.05 and green < total * 0.05:
+		return "ニンニクとショウガの最強タッグ！\n力がみなぎるエナジーカレー！"
+	# スイーツ系コンビ
+	if green > total * 0.4 and blue > total * 0.4 and red < total * 0.05 and yellow < total * 0.05:
+		return "爽やかさと甘さの二重奏！\nチャイを彷彿とさせるリラックスカレー！"
+	# パンチ＆スイート
+	if red > total * 0.4 and green > total * 0.4 and blue < total * 0.05 and yellow < total * 0.05:
+		return "禁断の出会い…ニンニクとシナモン！\n意外とやみつきになる、挑戦者のカレー。"
+	# ウォーム＆リフレッシュ
+	if yellow > total * 0.4 and blue > total * 0.4 and red < total * 0.05 and green < total * 0.05:
+		return "ポカポカなのに、後味さっぱり！\n新しい扉を開いた革命的カレー。"
+		
+	# --- 極端な配合の評価 ---
+	if red / total > 0.8:
+		return "ニンニク！ニンニク！ニンニク！\nもはやカレーではなく、ニンニクそのものだ！"
+	if blue / total > 0.8:
+		return "爽やかすぎて歯磨き粉みたい！？\nミント香る（？）超絶クリアカレー。"
+	if green / total > 0.8:
+		return "甘い！とにかく甘い！\nこれはもう、カレーの国のアップルパイだ！"
+	if yellow / total > 0.8:
+		return "ショウガの熱量で宇宙が見える！\n燃えるようなジンジャーカレー！"
+
+	# --- 主要な調味料が欠けている場合の評価 ---
+	if yellow < total * 0.1:
+		return "何か物足りない…そうか、ショウガが足りない！\n体の芯が温まらない、ちょっぴり寂しいカレー。"
+	if red < total * 0.1:
+		return "パンチが足りない！\n優しすぎて、逆に眠くなってしまうカレー。"
+
+	# --- 各調味料が優勢な場合の評価 ---
+	if red > blue and red > green and red > yellow:
+		if blue > 0:
+			return "ニンニクのパンチに、カルダモンの涼しい風。\n荒々しさと知性を感じる、策士のカレー。"
+		else:
+			return "ニンニクのストレートな衝撃！\n小細工なし、直球勝負の漢気カレー。"
+			
+	if blue > red and blue > green and blue > yellow:
+		if yellow > 0:
+			return "爽やかな風が吹いた後、体がポカポカ。\nまるでサウナのような、整えるカレー。"
+		else:
+			return "ひたすらに爽やか！\n気分をリフレッシュしたい時に食べるカレー。"
+
+	if green > red and green > blue and green > yellow:
+		if red > 0:
+			return "甘い香りの奥に潜む、ガツンとくる刺激。\nツンデレのような、ギャップ萌えカレー。"
+		else:
+			return "独特の甘みが、心を優しく包み込む。\nおばあちゃんの笑顔を思い出すカレー。"
+
+	if yellow > red and yellow > blue and yellow > green:
+		if green > 0:
+			return "体の芯から温まる中に、ふわりと香る甘み。\n冬の暖炉の前で食べたい、幸せのカレー。"
+		else:
+			return "ショウガの力が体に染み渡る！\n風邪をひきそうな時に食べたい、養生カレー。"
+
+	# --- 上記のどれにも当てはまらない、一般的な評価 ---
+	return "いろんな味がする…\n新時代のスタンダードカレー！"
 
 # 【変更】spawn_materialsに関数を追加
 func spawn_materials():
