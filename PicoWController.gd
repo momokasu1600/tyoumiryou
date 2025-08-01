@@ -111,7 +111,7 @@ func receive_and_map_data():
 			var real_y = -raw_az
 			var real_z = -raw_ax
 			var mapped_x = real_x
-			var mapped_y = real_z
+			var mapped_y = - real_z
 			var mapped_z = - real_y
 			final_acceleration = Vector3(mapped_x, mapped_y, mapped_z)
 
