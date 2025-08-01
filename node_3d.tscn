@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=4 uid="uid://cbu08yhurrlih"]
+[gd_scene load_steps=29 format=4 uid="uid://cbu08yhurrlih"]
 
 [ext_resource type="Script" uid="uid://cim504qw4ukx0" path="res://hassya.gd" id="1_a202f"]
 [ext_resource type="PackedScene" uid="uid://ckjlp5mpab3ds" path="res://tama.tscn" id="2_noarx"]
@@ -14,6 +14,7 @@
 [ext_resource type="PackedScene" uid="uid://dhbjdm2riuk84" path="res://carry.tscn" id="9_4arys"]
 [ext_resource type="Texture2D" uid="uid://by3dprasvhv73" path="res://citrus_orchard_road_puresky_4k.exr" id="12_imku0"]
 [ext_resource type="AudioStream" uid="uid://clbdtfw4nbmdq" path="res://maou_bgm_ethnic21.mp3" id="13_wlxy5"]
+[ext_resource type="AudioStream" uid="uid://dma341v4l217d" path="res://aseets/model/Onoma-Pop04-1(High-Dry).mp3" id="15_3v7ru"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_4xowi"]
 
@@ -119,7 +120,7 @@ sky = SubResource("Sky_tcnuu")
 
 [node name="Node3D" type="Node3D"]
 
-[node name="Camera3D" type="Camera3D" parent="." node_paths=PackedStringArray("cutting_label", "normal_label", "red_label", "blue_label", "black_label", "naan_spawn_marker", "lid_node", "lid_open_marker", "lid_closed_marker", "pot_body_node", "finished_curry_mesh", "shoot_timer", "timer_label")]
+[node name="Camera3D" type="Camera3D" parent="." node_paths=PackedStringArray("cutting_label", "normal_label", "red_label", "blue_label", "black_label", "naan_spawn_marker", "lid_node", "lid_open_marker", "lid_closed_marker", "pot_body_node", "finished_curry_mesh", "shoot_sound_player", "shoot_timer", "timer_label")]
 transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, -0.19127, 15.0701, 19.6888)
 script = ExtResource("1_a202f")
 explosion_scene = ExtResource("2_wlxy5")
@@ -142,6 +143,7 @@ lid_open_marker = NodePath("../LidOpenMarker")
 lid_closed_marker = NodePath("../LidClosedMarker")
 pot_body_node = NodePath("../AnimationPlayer2/StaticBody3D2")
 finished_curry_mesh = NodePath("../AnimationPlayer2/StaticBody3D2/Node3D")
+shoot_sound_player = NodePath("../pon!")
 shoot_timer = NodePath("../Timer")
 timer_label = NodePath("../seigenjikan")
 
@@ -253,5 +255,8 @@ one_shot = true
 [node name="seigenjikan" type="Label" parent="."]
 offset_right = 40.0
 offset_bottom = 23.0
+
+[node name="pon!" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("15_3v7ru")
 
 [connection signal="timeout" from="Timer" to="Camera3D" method="_on_timer_timeout"]

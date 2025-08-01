@@ -34,6 +34,8 @@ extends Node3D
 @export var pot_body_node: Node3D
 @export var finished_curry_mesh: Node3D
 
+@export var shoot_sound_player :AudioStreamPlayer
+
 # --- 内部で使う変数 ---
 var bullet_scenes = []
 var erabu = 0
@@ -159,6 +161,7 @@ func shoot_bullet():
 	get_tree().current_scene.add_child(bullet)
 	bullet.global_transform = self.global_transform
 	bullet.apply_central_impulse(Vector3.FORWARD.rotated(Vector3.UP, global_rotation.y) * bullet_speed)
+	shoot_sound_player.play()
 
 		
 func carryscene():
