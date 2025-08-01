@@ -441,13 +441,13 @@ func spawn_materials():
 	if potato_scene:
 		var potato = potato_scene.instantiate()
 		add_child(potato)
-		potato.position = Vector3(0.2,3, -3)
+		potato.position = Vector3(0.2,3, -10)
 		material_objects.append(potato)
 
 	if carrot_scene:
 		var carrot = carrot_scene.instantiate()
 		add_child(carrot)
-		carrot.position = Vector3(0.3, 3, -3)
+		carrot.position = Vector3(0.3, 3, -8)
 		material_objects.append(carrot)
 
 	# 【追加】新しい材料を出すときに、シェイクカウントをリセット
