@@ -52,6 +52,10 @@ var time_is_up: bool = false
 
 var is_cooking: bool = false
 
+#斬・count
+var cut_press_count: int = 0      # Cキーが押された回数を数えるカウンター
+const REQUIRED_CUTS: int = 10     # 材料1つを切るのに必要な回数
+
 # --- 関数の定義 ---
 
 func _ready():
@@ -80,54 +84,70 @@ func _ready():
 		timer_label.visible = false
 
 func _input(event):
-	# 【変更】調理中は何もしない
+	# 調理中は何もしない
 	if is_cooking:
 		return
 
+	# --- 材料を切るフェーズの処理 ---
 	if is_cutting_phase:
-		if event.is_action_pressed("cut_material"):
-			if not material_objects.is_empty():
-				var material_to_cut = material_objects.pop_back()
-				var cut_position = material_to_cut.global_position
-				material_to_cut.queue_free()
-
-				if chunk_scene:
-					for i in range(8):
-						var chunk = chunk_scene.instantiate()
-						add_child(chunk)
-						chunk.global_transform.origin = cut_position
-						var random_dir = Vector3(randf_range(-1, 1), randf_range(1.2, 2.0), randf_range(-1, 1)).normalized()
-						chunk.apply_central_impulse(random_dir * randf_range(0.5, 2))
-				
-				if cutting_label:
-					cutting_label.text = "Cキーで材料を切ろう！ (残り %d 個)" % material_objects.size()
+		if event.is_action("cut_material") and event.is_pressed():
 			
-			if material_objects.is_empty():
-				is_cutting_phase = false
-				if cutting_label:
-					cutting_label.text = "発射OK！"
-					await get_tree().create_timer(1.5).timeout
-					cutting_label.visible = false
-				if normal_label:
-					normal_label.visible = true
+			if not material_objects.is_empty():
+				cut_press_count += 1 # カウンターを1増やす
 				
-				if shoot_timer:
-					shoot_timer.start(30.0)
-				if timer_label:
-					timer_label.visible = true
-	else: # 発射フェーズ
+				# 残りの連打回数を計算して表示
+				var remaining_presses = REQUIRED_CUTS - cut_press_count
+				if cutting_label:
+					cutting_label.text = "Cキーを連打！ (あと %d 回)" % remaining_presses
+
+				# ★★★★★【重要】ここからが修正ポイント ★★★★★
+				# もし必要な回数だけ連打したら...
+				if cut_press_count >= REQUIRED_CUTS:
+					cut_press_count = 0 # カウンターをリセット
+					
+					# 【ここから】材料を実際に切る処理を、このif文の中に移動します
+					var material_to_cut = material_objects.pop_back()
+					var cut_position = material_to_cut.global_position
+					material_to_cut.queue_free()
+
+					if chunk_scene:
+						for i in range(8):
+							var chunk = chunk_scene.instantiate()
+							add_child(chunk)
+							chunk.global_transform.origin = cut_position
+							var random_dir = Vector3(randf_range(-1, 1), randf_range(1.2, 2.0), randf_range(-1, 1)).normalized()
+							chunk.apply_central_impulse(random_dir * randf_range(0.5, 2))
+					
+					# もし、これで全ての材料を切り終えたら
+					if material_objects.is_empty():
+						is_cutting_phase = false
+						if cutting_label:
+							cutting_label.text = "発射OK！"
+							await get_tree().create_timer(1.5).timeout
+							cutting_label.visible = false
+						if normal_label:
+							normal_label.visible = true
+						
+						if shoot_timer:
+							shoot_timer.start(30.0)
+						if timer_label:
+							timer_label.visible = true
+					else:
+						# まだ材料が残っているなら、UIを元に戻す
+						if cutting_label:
+							cutting_label.text = "Cキーで材料を切ろう！ (残り %d 個)" % material_objects.size()
+					# 【ここまで】がif文の中です
+	
+	# --- 発射フェーズの処理 (変更なし) ---
+	else: 
 		if time_is_up:
-			return # 時間切れ後は操作不能
+			return
 		
 		if event.is_action_pressed("kirikae"):
 			erabu = (erabu + 1) % bullet_scenes.size()
 	
 		if event.is_action_pressed("shoot"):
 			shoot_bullet()
-	
-		# エンターキーで手動で調理開始
-		#if event.is_action_pressed("ui_accept"):
-			#carryscene()
 
 func shoot_bullet():
 	var current_bullet_name = bullet_names[erabu]
