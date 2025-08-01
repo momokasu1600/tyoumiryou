@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=4 uid="uid://cbu08yhurrlih"]
+[gd_scene load_steps=32 format=4 uid="uid://cbu08yhurrlih"]
 
 [ext_resource type="Script" uid="uid://cim504qw4ukx0" path="res://hassya.gd" id="1_a202f"]
 [ext_resource type="PackedScene" uid="uid://ckjlp5mpab3ds" path="res://tama.tscn" id="2_noarx"]
@@ -17,6 +17,7 @@
 [ext_resource type="AudioStream" uid="uid://dma341v4l217d" path="res://aseets/model/Onoma-Pop04-1(High-Dry).mp3" id="15_3v7ru"]
 [ext_resource type="AudioStream" uid="uid://cjgrw3x8lwnpr" path="res://爆発2.mp3" id="16_tcnuu"]
 [ext_resource type="AudioStream" uid="uid://cmhocurk6vdc1" path="res://cut_sound.mp3" id="16_tuemg"]
+[ext_resource type="AudioStream" uid="uid://cahp2wqqi3nl6" path="res://videoplayback (1) (mp3cut.net).mp3" id="17_i0g27"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_4xowi"]
 
@@ -245,6 +246,9 @@ stream = ExtResource("15_3v7ru")
 
 [node name="cut sound" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("16_tuemg")
+
+[node name="nazo" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("17_i0g27")
 
 [node name="futano sound" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("16_tcnuu")

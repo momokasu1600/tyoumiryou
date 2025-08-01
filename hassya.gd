@@ -360,13 +360,20 @@ func evaluate_curry():
 		return "もっと調味料が欲しい！\n味が薄すぎる、だし汁のようなカレー。"
 
 	# --- 黄金比の評価 (最上級) ---
-	# 理想値: ニンニク(125), カルダモン(38), シナモン(63), しょうが(375)
-	if red.is_equal_approx(total * 0.208) and \
-	   blue.is_equal_approx(total * 0.063) and \
-	   green.is_equal_approx(total * 0.104) and \
-	   yellow.is_equal_approx(total * 0.625):
+	# 理想の比率を設定
+	var ideal_red_ratio = 0.208
+	var ideal_blue_ratio = 0.063
+	var ideal_green_ratio = 0.104
+	var ideal_yellow_ratio = 0.625
+	# 許容誤差 (例: ±10%)
+	var tolerance = 0.1
+	
+	# 各調味料が理想の比率の範囲内にあるかチェック
+	if red >= total * (ideal_red_ratio - tolerance) and red <= total * (ideal_red_ratio + tolerance) and \
+	   blue >= total * (ideal_blue_ratio - tolerance) and blue <= total * (ideal_blue_ratio + tolerance) and \
+	   green >= total * (ideal_green_ratio - tolerance) and green <= total * (ideal_green_ratio + tolerance) and \
+	   yellow >= total * (ideal_yellow_ratio - tolerance) and yellow <= total * (ideal_yellow_ratio + tolerance):
 		return "まさに黄金比！\n全ての味が調和した、神々のカレー！"
-
 	# --- 特殊な組み合わせの評価 ---
 	# パワー系コンビ
 	if red > total * 0.4 and yellow > total * 0.4 and blue < total * 0.05 and green < total * 0.05:

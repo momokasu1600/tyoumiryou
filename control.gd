@@ -1,5 +1,5 @@
 extends Control
-
+@export var nazo_sound_player :AudioStreamPlayer
 func _ready():
 	# 外部コントローラー（Pico W）のボタン入力を接続
 	PicoWController.button_pressed.connect(_on_controller_button_pressed)
@@ -20,4 +20,5 @@ func _input(event):
 # ゲーム開始の共通処理
 func start_game():
 	# シーン遷移
+	nazo_sound_player.play()
 	get_tree().change_scene_to_file("res://node_3d.tscn")
