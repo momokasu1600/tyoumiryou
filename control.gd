@@ -21,4 +21,5 @@ func _input(event):
 func start_game():
 	# シーン遷移
 	nazo_sound_player.play()
+
 	get_tree().change_scene_to_file("res://node_3d.tscn")

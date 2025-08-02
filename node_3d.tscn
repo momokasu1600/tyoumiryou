@@ -122,34 +122,8 @@ sky = SubResource("Sky_tcnuu")
 
 [node name="Node3D" type="Node3D"]
 
-[node name="Camera3D" type="Camera3D" parent="." node_paths=PackedStringArray("naan_spawn_marker", "lid_node", "lid_open_marker", "lid_closed_marker", "pot_body_node", "finished_curry_mesh", "shoot_sound_player", "futa_close_player", "cut_sound_player", "shoot_timer", "timer_label", "gauges_container", "red_percent_label", "blue_percent_label", "green_percent_label", "yellow_percent_label")]
-transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, -0.19127, 15.0701, 19.6888)
-script = ExtResource("1_a202f")
-explosion_scene = ExtResource("2_wlxy5")
-bullet_scene = ExtResource("3_jka67")
-red_bullet_scene = ExtResource("4_i5arm")
-blue_bullet_scene = ExtResource("2_noarx")
-black_bullet_scene = ExtResource("5_wc5p8")
-potato_scene = ExtResource("6_tereu")
-carrot_scene = ExtResource("7_cdqbm")
-chunk_scene = ExtResource("8_imku0")
-naan_scene = ExtResource("6_6iypd")
-naan_spawn_marker = NodePath("../naanOpenMarker")
-lid_node = NodePath("../AnimationPlayer2/StaticBody3D2/StaticBody3D3")
-lid_open_marker = NodePath("../LidOpenMarker")
-lid_closed_marker = NodePath("../LidClosedMarker")
-pot_body_node = NodePath("../AnimationPlayer2/StaticBody3D2")
-finished_curry_mesh = NodePath("../AnimationPlayer2/StaticBody3D2/Node3D")
-shoot_sound_player = NodePath("../pon!")
-futa_close_player = NodePath("../futano sound")
-cut_sound_player = NodePath("../cut sound")
-shoot_timer = NodePath("../Timer")
-timer_label = NodePath("../VBoxContainer/GaugesContainer/VBoxContainer/seigenjikan")
-gauges_container = NodePath("../VBoxContainer/GaugesContainer")
-red_percent_label = NodePath("../VBoxContainer/GaugesContainer/VBoxContainer/Label")
-blue_percent_label = NodePath("../VBoxContainer/GaugesContainer/VBoxContainer/Label2")
-green_percent_label = NodePath("../VBoxContainer/GaugesContainer/VBoxContainer/Label3")
-yellow_percent_label = NodePath("../VBoxContainer/GaugesContainer/VBoxContainer/Label4")
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(0.974201, -0.112841, 0.195447, 0, 0.866025, 0.5, -0.225682, -0.487101, 0.843683, 7.6258, 19.5618, 24.0246)
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 0, 4)
@@ -250,16 +224,17 @@ stream = ExtResource("16_tuemg")
 stream = ExtResource("16_tcnuu")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
-offset_right = 40.0
-offset_bottom = 40.0
+offset_right = 80.0
+offset_bottom = 80.0
 
 [node name="GaugesContainer" type="Control" parent="VBoxContainer"]
 layout_mode = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/GaugesContainer"]
 layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+offset_right = 80.0
+offset_bottom = 131.0
+scale = Vector2(3, 3)
 
 [node name="Label" type="Label" parent="VBoxContainer/GaugesContainer/VBoxContainer"]
 layout_mode = 2
@@ -276,4 +251,33 @@ layout_mode = 2
 [node name="seigenjikan" type="Label" parent="VBoxContainer/GaugesContainer/VBoxContainer"]
 layout_mode = 2
 
-[connection signal="timeout" from="Timer" to="Camera3D" method="_on_timer_timeout"]
+[node name="Camera3D2" type="Camera3D" parent="." node_paths=PackedStringArray("naan_spawn_marker", "lid_node", "lid_open_marker", "lid_closed_marker", "pot_body_node", "finished_curry_mesh", "shoot_sound_player", "futa_close_player", "cut_sound_player", "shoot_timer", "timer_label", "gauges_container", "red_percent_label", "blue_percent_label", "green_percent_label", "yellow_percent_label")]
+transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, -0.19127, 15.0701, 19.6888)
+script = ExtResource("1_a202f")
+explosion_scene = ExtResource("2_wlxy5")
+bullet_scene = ExtResource("3_jka67")
+red_bullet_scene = ExtResource("4_i5arm")
+blue_bullet_scene = ExtResource("2_noarx")
+black_bullet_scene = ExtResource("5_wc5p8")
+potato_scene = ExtResource("6_tereu")
+carrot_scene = ExtResource("7_cdqbm")
+chunk_scene = ExtResource("8_imku0")
+naan_scene = ExtResource("6_6iypd")
+naan_spawn_marker = NodePath("../naanOpenMarker")
+lid_node = NodePath("../AnimationPlayer2/StaticBody3D2/StaticBody3D3")
+lid_open_marker = NodePath("../LidOpenMarker")
+lid_closed_marker = NodePath("../LidClosedMarker")
+pot_body_node = NodePath("../AnimationPlayer2/StaticBody3D2")
+finished_curry_mesh = NodePath("../AnimationPlayer2/StaticBody3D2/Node3D")
+shoot_sound_player = NodePath("../pon!")
+futa_close_player = NodePath("../futano sound")
+cut_sound_player = NodePath("../cut sound")
+shoot_timer = NodePath("../Timer")
+timer_label = NodePath("../VBoxContainer/GaugesContainer/VBoxContainer/seigenjikan")
+gauges_container = NodePath("../VBoxContainer/GaugesContainer")
+red_percent_label = NodePath("../VBoxContainer/GaugesContainer/VBoxContainer/Label")
+blue_percent_label = NodePath("../VBoxContainer/GaugesContainer/VBoxContainer/Label2")
+green_percent_label = NodePath("../VBoxContainer/GaugesContainer/VBoxContainer/Label3")
+yellow_percent_label = NodePath("../VBoxContainer/GaugesContainer/VBoxContainer/Label4")
+
+[connection signal="timeout" from="Timer" to="Camera3D2" method="_on_timer_timeout"]

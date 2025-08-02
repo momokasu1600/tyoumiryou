@@ -45,10 +45,10 @@ shadow_mesh = SubResource("ArrayMesh_xvyl8")
 [node name="RigidBody3D" type="RigidBody3D"]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(-6.55671e-08, -1.5, 0, 1.5, -6.55671e-08, 0, 0, 0, 1.5, 0, 0, 0)
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 shape = SubResource("CapsuleShape3D_a3s80")
 
 [node name="球" type="MeshInstance3D" parent="."]
-transform = Transform3D(1.67318, 0, 0, 0, 0.463105, 0, 0, 0, 0.62281, 0, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 0.277, 0, 0, 0, 0.372, 0, 0, 0)
 mesh = SubResource("ArrayMesh_a3s80")
 skeleton = NodePath("")

@@ -400,7 +400,13 @@ func evaluate_curry():
 
 	# --- 主要な調味料が欠けている場合の評価 ---
 	if yellow < total * 0.1:
-		return "何か物足りない…そうか、ショウガが足りない！\n体の芯が温まらない、ちょっぴり寂しいカレー。"
+			return "ニンニクのストレートな衝撃！\n小細工なし、直球勝負の漢気カレー。"
+			
+	if blue > red and blue > green and blue > yellow:
+		if yellow > 0:
+			return "爽やかな風が吹いた後、体がポカポカ。\nまるでサウナのような、整えるカレー。"
+		else:
+			return "何か物足りない…そうか、ショウガが足りない！\n体の芯が温まらない、ちょっぴり寂しいカレー。"
 	if red < total * 0.1:
 		return "パンチが足りない！\n優しすぎて、逆に眠くなってしまうカレー。"
 
@@ -408,12 +414,6 @@ func evaluate_curry():
 	if red > blue and red > green and red > yellow:
 		if blue > 0:
 			return "ニンニクのパンチに、カルダモンの涼しい風。\n荒々しさと知性を感じる、策士のカレー。"
-		else:
-			return "ニンニクのストレートな衝撃！\n小細工なし、直球勝負の漢気カレー。"
-			
-	if blue > red and blue > green and blue > yellow:
-		if yellow > 0:
-			return "爽やかな風が吹いた後、体がポカポカ。\nまるでサウナのような、整えるカレー。"
 		else:
 			return "ひたすらに爽やか！\n気分をリフレッシュしたい時に食べるカレー。"
 

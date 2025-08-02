@@ -20,6 +20,11 @@ config/icon="res://icon.png"
 PicoWController="*res://PicoWController.gd"
 ScoreManager="*res://label.gd"
 
+[display]
+
+window/size/mode=4
+window/stretch/mode="canvas_items"
+
 [input]
 
 ui_accept={
