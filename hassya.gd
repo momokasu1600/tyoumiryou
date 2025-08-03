@@ -345,7 +345,10 @@ func shake_pot():
 	
 	await tween.finished
 	pot_body_node.rotation_degrees.z = 0
-	
+
+# ==================================================================
+# ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼ この関数を修正 ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+# ==================================================================
 func evaluate_curry():
 	var red = float(bullet_counts["赤"])      # ニンニク (パンチ)
 	var blue = float(bullet_counts["青"])     # カルダモン (爽やか)
@@ -360,31 +363,25 @@ func evaluate_curry():
 		return "もっと調味料が欲しい！\n味が薄すぎる、だし汁のようなカレー。"
 
 	# --- 黄金比の評価 (最上級) ---
-	# 理想の比率を設定
 	var ideal_red_ratio = 0.208
 	var ideal_blue_ratio = 0.063
 	var ideal_green_ratio = 0.104
 	var ideal_yellow_ratio = 0.625
-	# 許容誤差 (例: ±10%)
 	var tolerance = 0.1
 	
-	# 各調味料が理想の比率の範囲内にあるかチェック
 	if red >= total * (ideal_red_ratio - tolerance) and red <= total * (ideal_red_ratio + tolerance) and \
 	   blue >= total * (ideal_blue_ratio - tolerance) and blue <= total * (ideal_blue_ratio + tolerance) and \
 	   green >= total * (ideal_green_ratio - tolerance) and green <= total * (ideal_green_ratio + tolerance) and \
 	   yellow >= total * (ideal_yellow_ratio - tolerance) and yellow <= total * (ideal_yellow_ratio + tolerance):
 		return "まさに黄金比！\n全ての味が調和した、神々のカレー！"
+		
 	# --- 特殊な組み合わせの評価 ---
-	# パワー系コンビ
 	if red > total * 0.4 and yellow > total * 0.4 and blue < total * 0.05 and green < total * 0.05:
 		return "ニンニクとショウガの最強タッグ！\n力がみなぎるエナジーカレー！"
-	# スイーツ系コンビ
 	if green > total * 0.4 and blue > total * 0.4 and red < total * 0.05 and yellow < total * 0.05:
 		return "爽やかさと甘さの二重奏！\nチャイを彷彿とさせるリラックスカレー！"
-	# パンチ＆スイート
 	if red > total * 0.4 and green > total * 0.4 and blue < total * 0.05 and yellow < total * 0.05:
 		return "禁断の出会い…ニンニクとシナモン！\n意外とやみつきになる、挑戦者のカレー。"
-	# ウォーム＆リフレッシュ
 	if yellow > total * 0.4 and blue > total * 0.4 and red < total * 0.05 and green < total * 0.05:
 		return "ポカポカなのに、後味さっぱり！\n新しい扉を開いた革命的カレー。"
 		
@@ -398,31 +395,33 @@ func evaluate_curry():
 	if yellow / total > 0.8:
 		return "ショウガの熱量で宇宙が見える！\n燃えるようなジンジャーカレー！"
 
-	# --- 主要な調味料が欠けている場合の評価 ---
-	if yellow < total * 0.1:
-			return "ニンニクのストレートな衝撃！\n小細工なし、直球勝負の漢気カレー。"
-			
+	# --- 【変更箇所】主要な調味料が欠けている場合の評価 ---
+	# --- 【変更箇所】各調味料が優勢な場合の評価 ---
+	# 1. ニンニク(赤)が優勢な場合
+	if red > blue and red > green and red > yellow:
+		# 【条件変更】カルダモンがニンニクの20%以上なら「策士」
+		if blue >= red * 0.2:
+			return "ニンニクのパンチに、カルダモンの涼しい風。\n荒々しさと知性を感じる、策士のカレー。"
+		else:
+			# カルダモンが少ない場合は、ニンニクメインの評価
+			return "ガツンとニンニク！\nパンチの効いたストロングスタイルのカレー。"
+
+	# 2. カルダモン(青)が優勢な場合
 	if blue > red and blue > green and blue > yellow:
 		if yellow > 0:
 			return "爽やかな風が吹いた後、体がポカポカ。\nまるでサウナのような、整えるカレー。"
 		else:
-			return "何か物足りない…そうか、ショウガが足りない！\n体の芯が温まらない、ちょっぴり寂しいカレー。"
-	if red < total * 0.1:
-		return "パンチが足りない！\n優しすぎて、逆に眠くなってしまうカレー。"
-
-	# --- 各調味料が優勢な場合の評価 ---
-	if red > blue and red > green and red > yellow:
-		if blue > 0:
-			return "ニンニクのパンチに、カルダモンの涼しい風。\n荒々しさと知性を感じる、策士のカレー。"
-		else:
+			# 【移動】元のコードから評価コメントを移動
 			return "ひたすらに爽やか！\n気分をリフレッシュしたい時に食べるカレー。"
 
+	# 3. シナモン(緑)が優勢な場合
 	if green > red and green > blue and green > yellow:
 		if red > 0:
 			return "甘い香りの奥に潜む、ガツンとくる刺激。\nツンデレのような、ギャップ萌えカレー。"
 		else:
 			return "独特の甘みが、心を優しく包み込む。\nおばあちゃんの笑顔を思い出すカレー。"
 
+	# 4. しょうが(黄)が優勢な場合
 	if yellow > red and yellow > blue and yellow > green:
 		if green > 0:
 			return "体の芯から温まる中に、ふわりと香る甘み。\n冬の暖炉の前で食べたい、幸せのカレー。"
@@ -431,6 +430,11 @@ func evaluate_curry():
 
 	# --- 上記のどれにも当てはまらない、一般的な評価 ---
 	return "いろんな味がする…\n新時代のスタンダードカレー！"
+
+# ==================================================================
+# ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ 修正ここまで ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
+# ==================================================================
+
 
 # 【変更】spawn_materialsに関数を追加
 func spawn_materials():
